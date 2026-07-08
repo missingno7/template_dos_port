@@ -102,7 +102,7 @@ example: `pre2/bootstrap_hooks.py` (`install_fast_adlib_service`).
 
 **You need to hear/verify FM music without the game running.**
 → Capture the OPL register stream via `dos.adlib_callback`, render offline
-through `nuked_opl3`. Worked example: `pre2_port/scripts/render_music.py`.
+through `pynuked_opl3`. Worked example: `pre2_port/scripts/render_music.py`.
 
 ## Verification depth (the endgame)
 

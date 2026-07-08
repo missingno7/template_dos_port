@@ -18,7 +18,7 @@ reachable from there.
 | Task rituals for recurring work (`prompts/`) | The 8086/DOS VM, proof engines, and framework tests (`dos_re/dos_re/`, `dos_re/tests/`) |
 | The adapter template you copy to start a game (`examples/adapter_skeleton/`) | Game-free runnable demos of the framework itself (`dos_re/examples/`) |
 | `MIGRATION.md` — provenance ledger for the whole ecosystem's split | `dos_re/AGENTS.md` — contribution rules for the framework itself |
-| Your game adapter (e.g. `mygame/`), `assets/` (gitignored), `tests/` — created as you port | `dos_re/nuked_opl3/` — its own submodule (Nuked-OPL3 FM synth) |
+| Your game adapter (e.g. `mygame/`), `assets/` (gitignored), `tests/` — created as you port | `dos_re/pynuked_opl3/` — its own submodule (Nuked-OPL3 FM synth) |
 
 ## Setup
 
@@ -39,5 +39,5 @@ you're porting.
 ## License
 
 MIT ([LICENSE](LICENSE)) for the methodology in this repo. The `dos_re/`
-submodule and its own `nuked_opl3/` submodule carry their own licenses (MIT,
+submodule and its own `pynuked_opl3/` submodule carry their own licenses (MIT,
 and LGPL-2.1-or-later respectively) — see [LICENSE](LICENSE) for details.

@@ -20,8 +20,8 @@ Related, outside `docs/`:
 
 - [`../MIGRATION.md`](../MIGRATION.md) — where every file in this ecosystem
   came from (pre2_port / overkill_port → `dos_re`; `dos_re` → `dos_re` +
-  `template_dos_port` + `nuked_opl3`), what was deliberately excluded, and what
-  still needs cleanup.
+  `template_dos_port` + `pynuked_opl3`), what was deliberately excluded, and
+  what still needs cleanup.
 - [`../prompts/`](../prompts/README.md) — the ritual for each recurring task
   type, ending in an accountability REPORT block.
 - [`../examples/adapter_skeleton/`](../examples/adapter_skeleton/README.md) —

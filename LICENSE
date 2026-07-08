@@ -23,8 +23,8 @@ SOFTWARE.
 ---
 
 This license covers the porting methodology, prompts, and templates in this
-repository. The `dos_re/` submodule (framework) and its own `nuked_opl3/`
+repository. The `dos_re/` submodule (framework) and its own `pynuked_opl3/`
 submodule (LGPL-2.1-or-later) carry their own licenses — see
-`dos_re/LICENSE` and `dos_re/nuked_opl3/LICENSE`. Game code, assets, and
+`dos_re/LICENSE` and `dos_re/pynuked_opl3/LICENSE`. Game code, assets, and
 executables you add here (in your adapter package and `assets/`) are governed
 by whatever terms apply to that game — never assumed to be MIT.
