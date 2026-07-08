@@ -36,8 +36,13 @@ is the provenance record. The shortlist:
   `overkill/coverage.py`, island taxonomy parameterized).
 - **Headless verification driver** (pluggable runtime factory).
 - **Probe harness + walk-shadow cache** (delta-encoded per-frame state cache).
-- **Runtime-code staticization registry** (`RuntimeCodeSlot`/variant guards —
-  the signature-guard primitives already live in `dos_re/hooks.py`).
+- ~~Runtime-code staticization registry~~ **Done** (`dos_re/runtime_code.py`):
+  `RuntimeCodeSlot`/`RuntimeCodeVariant`/`RuntimeCodeStaticization`, variant
+  identification against caller-supplied slot tables, the staticization-ready
+  gate, and an opt-in write tracer for discovering installers — generalized
+  from Overkill's own `overkill/runtime_code.py` (a materially richer
+  mechanism than the flat `self_disable_if_patched`/`code_matches` guards
+  already in `dos_re/hooks.py`, which stay as the simpler single-variant case).
 - **Report generator / progress dashboard** (hooks by status, demo pass rate,
   interpreted-vs-native %, maturity counts, divergence list — the
   `source_port_status.py` pattern).
