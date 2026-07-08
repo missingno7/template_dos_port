@@ -70,13 +70,16 @@ print(rt.cpu.addr(), rt.cpu.instruction_count)
   saved DAC palette and display start). If your game uses a mode it doesn't
   cover (CGA, Tandy, text), your adapter grows a rasterizer — the tool is the
   template.
-- Watch it live: `python tools/view.py --exe assets/GAME.EXE` opens an
-  interactive window (same two video modes), forwards your keyboard to the
-  game, and paces with `--fps` / `--steps-per-frame` /
-  `--timer-irqs-per-frame`. This is also how the human owner watches the game
-  and gives feedback throughout the port. It is deliberately approximate (no
-  boundaries, no hooks) — the verifiers stay the truth; your adapter's real
-  runner grows from this template.
+- Watch it live: copy this repo's [`scripts/play.py`](../scripts/play.py)
+  (a thin `GameFrontend` over `dos_re.player`, the unified play runner) and
+  fill in its GAME-SPECIFIC blocks — that IS your port's runner and the
+  human owner's window from day one: viewer by default (`--headless` to
+  disable), snapshot save/resume, demo record/replay, F10/F11/F12 hotkeys,
+  paced with `--present-hz` / `--steps-per-frame` / `--timer-irqs-per-frame`.
+  Keep the standard flag names; the cookbook's play-runner entry maps the
+  game-specific ideas (pacing models, `--safe-hooks` tiers, verify modes) to
+  worked examples. (`python dos_re/tools/view.py --exe assets/GAME.EXE` is
+  the zero-setup fallback — the same runner with no adapter at all.)
 - Deliver keys via `dos_re.interrupts.deliver_scancode` and confirm the game's
   key-state table updates (most action games poll their own INT 09h ISR state,
   not BIOS).

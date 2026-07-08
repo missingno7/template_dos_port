@@ -126,6 +126,71 @@ repro-artifact capture (`dos_re/repro_artifacts.py`) pairs with it.
 levels/scenes/behaviours each reaches; blind spots are reported risks. Worked
 examples: `pre2/probes/demo_census.py`, `pre2_port/docs/pre2/demo_manifest.md`.
 
+## The play.py entry point (the human's window into the port)
+
+The runner itself is UNIFIED now: `dos_re/dos_re/player.py` owns the standard
+CLI (viewer by default / `--headless`; `--snapshot`/`--save-snapshot`;
+`--record-demo`/`--play-demo`/`--demo-continue`; the four hook-mode flags;
+pacing knobs), the viewer loop with the standard hotkeys (F10 screenshot,
+F11 demo-record toggle, F12 snapshot), headless replay and crash snapshots.
+Your port subclasses `GameFrontend` — start from this repo's
+[`scripts/play.py`](../scripts/play.py) and keep the flag names; the worked
+examples below are the GAME-SPECIFIC ideas you graduate into as the port
+matures.
+
+**Which pacing model? (the main thing ports actually differ in).**
+→ Start with the library default: a fixed `--steps-per-frame` budget +
+`--timer-irqs-per-frame` INT 08h ticks — no wall clock, the frame index IS
+the demo clock, record/replay trivially deterministic (worked example:
+`skyroads_port/scripts/play.py`). Graduate only when the game demands it:
+P2 models PIT ch0 + the 70 Hz retrace on the WALL clock for live play while
+demos keep a deterministic instruction-count clock (`pre2_port/scripts/play.py`,
+`docs/pre2/timing_hook_design.md` — read its §7 before touching live pacing);
+Overkill presents at *modelled wait boundaries* (its timer/retrace wait
+addresses) from an emulator thread with a producer/consumer handoff
+(`overkill_port/scripts/play.py`). Whatever you pick: every knob a replay
+must match goes into `demo_metadata`/`apply_demo_metadata`, or old demos lie.
+
+**A hook tier safe enough to record demos over (`--safe-hooks`).**
+→ Classify hooks by WRITE-SET: render/audio-owned hooks (their writes cannot
+touch the gameplay state a recording certifies) plus input-closed asset
+decoders proven byte-identical over the whole asset set. Running only that
+tier keeps the wall-clock playable for fluent human demo recording while
+every gameplay byte still comes from original ASM. Worked example:
+`pre2.checkpoints.SAFE_ORACLE_HOOKS` + the `--safe-hooks` help text in
+`pre2_port/scripts/play.py`.
+
+**In-viewer verify/trace modes (`--verify-hooks`, `--trace-hooks`).**
+→ P2 runs the ASM as oracle and diffs each recovered replacement at its
+contract boundary live, with a periodic per-hook summary (`--verify-verbose`,
+`--full-verify` = whole-machine diff); Overkill adds a strict headless hook
+verifier and a differential frame verifier behind the same flag family
+(`--verify-frames`, budgets, PNG dumps). Worked examples:
+`pre2_port/scripts/play.py`, `overkill_port/scripts/play.py` +
+`overkill/verification.py`, `overkill/headless_verification.py`.
+
+**Non-VGA video (CGA / Tandy / EGA pages / text) in the viewer.**
+→ The library's default decoder covers VGA mode 13h + the 320x200 planar
+path. Overkill's viewer decodes CGA `B800h` (palette-selectable) and Tandy,
+publishing immutable VRAM snapshots to the UI thread. Worked example:
+`overkill_port/scripts/play.py` (`--video cga|ega|tandy`, `--palette`).
+
+**Viewer audio.**
+→ Faithful OPL/AdLib: forward the VM's register stream to the vendored
+Nuked-OPL3 backend (`dos_re.dos.set_adlib_callback` + `pynuked_opl3`; worked
+examples: `overkill_port/scripts/play.py --adlib-audio`,
+`ancient_port/scripts/play.py`). Digital SB-DMA games: pump the emulated DMA
+blocks to the host mixer (worked example: P2 `--audio adlib`, and
+`docs/pre2/audio_architecture.md` for the enhanced SDL_mixer path).
+
+**Convenience fast-paths behind flags (never silent).**
+→ Recovered accelerators the human toggles: P2's `--fast-song-load`
+(byte-exact MOD-loader fast-forward, default ON live / OFF for replays so old
+demos still verify) and `--fast-adlib` (mute the hot AdLib thunk to reach
+graphics fastest). The pattern: default them by MODE, record them in demo
+metadata, document the byte-exactness status in the help text. Worked
+example: `pre2_port/scripts/play.py`.
+
 ## Progress and process machinery
 
 **Measured progress reporting (interpreted vs native %, per-island).**

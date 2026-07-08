@@ -42,10 +42,11 @@ equivalence. ([`docs/lifecycle.md`](docs/lifecycle.md) tells the whole arc.)
    package — the actual package is `dos_re/dos_re/`. This repo's
    [`pyproject.toml`](pyproject.toml) sets `pythonpath = ["dos_re"]` so
    `pytest` resolves `from dos_re.x import y` correctly for both the
-   framework's own tests and yours. A non-pytest entry-point script (e.g. a
-   future `mygame/play.py`) needs the same directory on `sys.path` itself —
-   copy the `ROOT = Path(__file__).resolve().parents[N]; sys.path.insert(0,
-   str(ROOT / "dos_re"))` pattern used in `dos_re/examples/*/`.
+   framework's own tests and yours. A non-pytest entry-point script needs the
+   same directory on `sys.path` itself — this repo's
+   [`scripts/play.py`](scripts/play.py) (the standard play runner you will
+   adapt; a thin `GameFrontend` over `dos_re.player`) already does it —
+   copy its `ROOT`/`sys.path` header for any further scripts.
 3. **Start the ledgers** (empty is fine): `docs/<game>/run_status.md` (current
    phase, recent findings), `docs/<game>/symbol_ledger.md` (addresses →
    evidence), `docs/<game>/blockers.md` (see the loop protocol), and the
