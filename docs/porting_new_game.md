@@ -128,6 +128,32 @@ oracle → document. One routine, one verification, per slice. See
 [`hooks_and_verification.md`](../dos_re/docs/hooks_and_verification.md), and
 [`lifecycle.md`](lifecycle.md) for where this stage sits in the whole arc.
 
+**Optional accelerator — don't hand-translate the first draft.** The
+automatic lifter (`dos_re/docs/lifting_design.md`) turns a known function
+entry into a literal, verified Python hook mechanically, so you refactor from
+a proven artifact instead of decompiling from scratch. Two commands:
+
+```bash
+# 1. Census: which of these entries can be lifted, and why not?
+python dos_re/tools/liftgen.py --exe assets/GAME.EXE --snapshot <snap> \
+    --entries-file docs/<game>/candidates.txt
+
+# 2. Lift + prove in situ against the ASM oracle (writes a proof ledger):
+python dos_re/tools/liftverify.py --exe assets/GAME.EXE --snapshot <snap> \
+    --entry CS:IP --steps 5000000 --emit-dir mygame/lifted
+```
+
+`liftverify` runs each lifted function against the interpreted original every
+time it executes and reports `ORACLE_PASSING` / `DIVERGED` / `NOT_REACHED`
+(pick a snapshot where the target actually runs). A passing lift is a correct
+replacement island *for free* — then the AI's job is to rename/simplify it
+into clean recovered Python, with the same oracle keeping it honest. Lifted
+functions live in their own `mygame/lifted/` tier and their own proof ledger;
+they count as recovered **only after** a human/AI refactors them and tags them
+`@oracle_link` (see the cookbook's "Automatic lifting" entry). ~95% of a
+lifted function is literal per-instruction Python; the rest is exact
+interpreter-fallback lines that mark what to look at first.
+
 Tag every recovered function with `@oracle_link(boundary, contract, status,
 merge_target)` from `dos_re.islands`, and generate your island manifest from
 the code (`python tools/gen_island_manifest.py mygame.codecs mygame.recovered

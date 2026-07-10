@@ -104,6 +104,34 @@ example: `pre2/bootstrap_hooks.py` (`install_fast_adlib_service`).
 → Capture the OPL register stream via `dos.adlib_callback`, render offline
 through `pynuked_opl3`. Worked example: `pre2_port/scripts/render_music.py`.
 
+## Automatic lifting (the first-draft accelerator)
+
+**Not wanting to hand-translate a routine's first Python version from ASM.**
+→ *The lifter* (`dos_re/docs/lifting_design.md`, framework-level): point it at
+a function entry and it generates a literal, per-instruction Python hook —
+ugly but faithful — then proves it byte-exact against the interpreted original
+so you refactor from a verified artifact instead of decompiling from scratch.
+`liftgen --report` censuses which entries are liftable and why not (indirect
+jumps and x87 are the usual refusals); `liftgen --emit` writes the hooks;
+`liftverify` installs each one and, every time it runs, diffs the full machine
+state against the ASM oracle, reporting `ORACLE_PASSING` / `DIVERGED` /
+`NOT_REACHED` into a proof ledger. ~95% of a lifted function is real
+per-instruction Python (ALU/mov/flags/shifts/string ops calling the
+interpreter's own helpers); the remainder are exact interpreter-fallback lines
+that mark the to-do list. Calls and INTs run through the VM, so callees never
+need lifting and lifted/hand-written hooks compose. Measured: 269/335 overkill
+functions liftable, the lifted `4537` passes its hand-hook's 300-case fuzz
+byte-exact (and was correct on a flag tail the *hand* version got wrong).
+
+**Keeping "lifted" honest against "recovered".** → Lifted functions are
+coverage of the *verification* frontier, not the *understanding* frontier, so
+they live in their own `<game>/lifted/` tier with their own JSON proof ledger
+(`dos_re.lift.manifest`), disjoint from `@oracle_link` islands. A lift becomes
+recovered source only after a human/AI renames and simplifies it into clean
+Python and tags it `@oracle_link` — with the same oracle test unchanged. Never
+let a wall of unread-but-verified lifted code inflate the campaign's
+"recovered %".
+
 ## Verification depth (the endgame)
 
 **Proving the native port equals the VM, tick by tick, over whole playthroughs.**
