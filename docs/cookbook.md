@@ -169,15 +169,39 @@ matures.
 **Which pacing model? (the main thing ports actually differ in).**
 → Start with the library default: a fixed `--steps-per-frame` budget +
 `--timer-irqs-per-frame` INT 08h ticks — no wall clock, the frame index IS
-the demo clock, record/replay trivially deterministic (worked example:
-`skyroads_port/scripts/play.py`). Graduate only when the game demands it:
-P2 models PIT ch0 + the 70 Hz retrace on the WALL clock for live play while
-demos keep a deterministic instruction-count clock (`pre2_port/scripts/play.py`,
-`docs/pre2/timing_hook_design.md` — read its §7 before touching live pacing);
-Overkill presents at *modelled wait boundaries* (its timer/retrace wait
-addresses) from an emulator thread with a producer/consumer handoff
-(`overkill_port/scripts/play.py`). Whatever you pick: every knob a replay
-must match goes into `demo_metadata`/`apply_demo_metadata`, or old demos lie.
+the demo clock, record/replay trivially deterministic. Graduate only when the
+game demands it, cheapest first:
+- **Deterministic tick-wait park** (simplest, no wall clock): the game paces
+  off a timer-tick counter its INT 08h ISR bumps, but the driver delivers all
+  of a frame's IRQs at frame start — so that counter is *constant for the whole
+  step budget*, and any loop waiting on it spins out the rest of the budget for
+  nothing. Classify those wait heads and end the frame the instant the game
+  parks in one (byte-equivalent trajectory: the spins have no side effects).
+  Worked example: `skyroads_port/skyroads/pacing.py` (`--frame-park`) — ~6×
+  fewer interpreted steps on gameplay-heavy frames, keeping the deterministic
+  fixed-budget clock.
+- **Wall-clock model** (P2): PIT ch0 + the 70 Hz retrace on the WALL clock for
+  live play, while demos keep a deterministic instruction-count clock
+  (`pre2_port/scripts/play.py`, `docs/pre2/timing_hook_design.md` — read its §7
+  before touching live pacing).
+- **Modelled wait boundaries** (Overkill): present at the game's timer/retrace
+  wait addresses from an emulator thread with a producer/consumer handoff
+  (`overkill_port/scripts/play.py`).
+
+Whatever you pick: every knob a replay must match goes into
+`demo_metadata`/`apply_demo_metadata`, or old demos lie.
+
+**How big should `--steps-per-frame` be?** Size it *above* the game's peak
+per-frame work, never toward the average. A budget below the real per-frame cost
+isn't just a mid-work cut: the original ASM notices it isn't completing a logic
+tick per frame and engages *its own* lag compensation, so the game plays
+differently — still deterministic, but not original pacing (`pre2_port` warns
+below chunk 20000, reaching natural pacing only from ~40000). This matters
+*more* once you add a tick-wait park: the park makes the budget a **ceiling** the
+common frame never reaches, so its value is set entirely by the rare heavy
+frames — size it to peak + headroom (SkyRoads: measured peak 37.3k steps →
+budget 48k). Because `steps_per_frame` lives in `demo_metadata`, raising the
+default never disturbs existing recordings.
 
 **A hook tier safe enough to record demos over (`--safe-hooks`).**
 → Classify hooks by WRITE-SET: render/audio-owned hooks (their writes cannot
