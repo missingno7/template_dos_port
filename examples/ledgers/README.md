@@ -12,6 +12,7 @@ ledgers read the same way.
 | [`blockers.md`](blockers.md) | Reverted slices with evidence — a logged blocker is progress; a workaround is debt. | The moment a slice is reverted |
 | [`symbol_ledger.md`](symbol_ledger.md) | Address → name → evidence → status. The evidence trail behind every semantic name. | Every slice that names something |
 | [`demo_manifest.md`](demo_manifest.md) | The demo corpus: what each demo covers, and the corpus's blind spots. | Every promoted demo |
+| [`overnight_goal.md`](overnight_goal.md) | The standing goal brief for unattended runs (`scripts/overnight_loop.sh`): done-condition, gates, work-queue buckets. Stable by design — the live frontier lives in `run_status.md`. | When the campaign's phase changes |
 
 The island manifest (`docs/recovered_islands.md`) is **generated**
 (`dos_re/tools/gen_island_manifest.py`), never hand-edited — it has no
