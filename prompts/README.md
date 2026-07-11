@@ -57,6 +57,9 @@ new game ──▶ start_new_game_adapter (to the first no-op frame verify)
                          ▼
              write_recovery_status  (every session ends here)
       audit_no_silent_fallbacks  (periodically, and before any milestone claim)
+
+endgame ──▶ prove_native_equivalence  (the flip's exit gate: the corpus
+                                       replays tick-exact on the VM-less core)
 ```
 
 | Prompt | Task |
@@ -67,4 +70,5 @@ new game ──▶ start_new_game_adapter (to the first no-op frame verify)
 | [`create_state_mirror.md`](create_state_mirror.md) | Name an island's offsets behind typed views without weakening verification. |
 | [`promote_hook_to_subsystem.md`](promote_hook_to_subsystem.md) | Collapse proven islands into a larger native unit. |
 | [`audit_no_silent_fallbacks.md`](audit_no_silent_fallbacks.md) | Sweep for quiet guesses, tolerated mismatches, and fake confidence. |
+| [`prove_native_equivalence.md`](prove_native_equivalence.md) | Endgame: build the `dos_re.tick_demo` adapter and prove the VM-less core replays the whole corpus tick-exact. |
 | [`write_recovery_status.md`](write_recovery_status.md) | Regenerate the ledgers and report honest progress. |
