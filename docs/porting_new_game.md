@@ -3,7 +3,7 @@
 This is the concrete path from "an original EXE + its data files" to "the
 oracle-driven recovery loop is running". The full method is in
 [`ai_porting_charter.md`](ai_porting_charter.md); this guide is the ordered
-to-do list with the framework touchpoints named. If you are the porting agent,
+to-do list with the framework touchpoints named.
 [`START_HERE.md`](../START_HERE.md) is your boot sequence (it routes here) and
 [`pitfalls.md`](pitfalls.md) is the list of mistakes already made for you.
 
@@ -114,6 +114,14 @@ regression asset: record into `artifacts/` (scratch), then **promote** it to
 storage convention is in
 [`demos_and_snapshots.md`](../dos_re/docs/demos_and_snapshots.md#where-evidence-lives-git-convention).
 
+You can usually script this first demo yourself (a few keys through the menus
+into gameplay). For demos that need real *play* — clearing a level, reaching a
+boss, dying in a specific way — **ask the human**: give them the exact command
+(`python scripts/play.py --record-demo NAME`), what to do in-game, and where
+the artifact lands. The human records; you promote it into the corpus and it
+becomes a proof. (Corpus breadth matters more than skill — deaths, game-overs
+and full playthroughs are the proof spine's spine; pitfall #22.)
+
 ## 7. Start the lifting loop
 
 Start with the hot, well-bounded **leaf** routines — asset decompression and
@@ -149,7 +157,7 @@ time it executes and reports `ORACLE_PASSING` / `DIVERGED` / `NOT_REACHED`
 replacement island *for free* — then the AI's job is to rename/simplify it
 into clean recovered Python, with the same oracle keeping it honest. Lifted
 functions live in their own `mygame/lifted/` tier and their own proof ledger;
-they count as recovered **only after** a human/AI refactors them and tags them
+they count as recovered **only after** you refactor them and tag them
 `@oracle_link` (see the cookbook's "Automatic lifting" entry). ~95% of a
 lifted function is literal per-instruction Python; the rest is exact
 interpreter-fallback lines that mark what to look at first.

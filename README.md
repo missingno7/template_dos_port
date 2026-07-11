@@ -1,40 +1,63 @@
-# template_dos_port — entry point for a new DOS game source port
+# template_dos_port — an AI agent ports your DOS game
 
-This is where a new oracle-driven DOS game recovery starts. It packages the
-**porting methodology** — the operational boot sequence, the method, the
-pitfalls already paid for, the task rituals, and the adapter template — around
-the [`dos_re`](https://github.com/missingno7/dos_re) framework, which is
-wired in here as a git submodule at `dos_re/`.
+This repository turns an original DOS game into a **verified, native source
+port** — and the porting work is done by an **AI agent**, not by you. It
+packages a proven recovery methodology (piloted on Overkill, completed
+end-to-end on Prehistorik 2) around the
+[`dos_re`](https://github.com/missingno7/dos_re) framework, wired in as a git
+submodule at `dos_re/`. The original executable runs inside a VM and serves as
+the *oracle*: the agent recovers the game one verified routine at a time, and
+nothing ships until it provably matches the original.
 
-**Start at [`START_HERE.md`](START_HERE.md).** It is the boot sequence for an
-AI agent (or human) handed this repo plus a game to port — everything else is
-reachable from there.
+## How the work is split
 
-## What lives here vs in the `dos_re` submodule
-
-| Here (`template_dos_port`) | `dos_re/` submodule |
+| You (the human) | The AI agent |
 |---|---|
-| The method: boot sequence, lifecycle, charter, pitfalls, cookbook, the porting checklist (`docs/`) | The framework's own reference docs: architecture, hooks/verification, demos/snapshots, state mirrors, hardware support (`dos_re/docs/`) |
-| Task rituals for recurring work (`prompts/`) | The 8086/DOS VM, proof engines, and framework tests (`dos_re/dos_re/`, `dos_re/tests/`) |
-| The adapter template you copy to start a game (`examples/adapter_skeleton/`) | Game-free runnable demos of the framework itself (`dos_re/examples/`) |
-| `MIGRATION.md` — provenance ledger for the whole ecosystem's split | `dos_re/AGENTS.md` — contribution rules for the framework itself |
-| Your game adapter (e.g. `mygame/`), `assets/` (gitignored), `tests/` — created as you port | `dos_re/pynuked_opl3/` — its own submodule (Nuked-OPL3 FM synth) |
+| Provide your legally owned game files (EXE + data) in `assets/` | Everything else: boots the game in the VM, probes it, finds boundaries, records proofs, recovers routines, builds and verifies the native port |
+| When asked: **play the game** to record a demo, or provide saves / screenshots / snapshots (the agent gives you the exact command) | Asks for those recordings when needed and turns them into regression proofs |
+| Playtest the port and say what looks or sounds wrong | Traces the divergence against the original binary and fixes it |
 
-## Setup
+You are **not** expected to reverse-engineer anything: no assembly, no hooks,
+no addresses, no internal workflow. If a document in `docs/` reads like a
+technical manual, it is — for the agent.
+
+## Quick start
 
 ```bash
 git clone --recurse-submodules <this repo>
 cd template_dos_port
-python dos_re/examples/tiny_frame_game/walkthrough.py   # confirms the framework works here
-python -m pytest -q                                       # framework suite (+ yours, once you add tests/)
+# put your game's files into assets/   (gitignored — original files are never committed)
+python dos_re/examples/tiny_frame_game/walkthrough.py   # sanity check: the framework works here
 ```
 
-If you already cloned without `--recurse-submodules`:
-`git submodule update --init --recursive`.
+Then hand the repository to your AI agent with an instruction like:
 
-No game code, assets, or executables are included or ever committed here
-(`assets/` is gitignored) — bring your own legally owned copy of the game
-you're porting.
+> Read `AGENTS.md` and port the game in `assets/`.
+
+The agent takes it from there. Progress lands in `docs/<game>/run_status.md`
+(a plain-language status report the agent keeps current), and
+`python scripts/play.py` is your window — the same runner the agent uses, with
+a live viewer, demo recording, and screenshots.
+
+## What you get at the end
+
+A standalone native port that boots from the original data files alone — no
+emulator, no EXE in the hot path — plus the proof that it behaves exactly like
+the original: a corpus of recorded demos that replay identically on the
+original (in the VM) and on the port, verified byte-exact.
+
+## Which documents are for whom
+
+| For you | For the agent |
+|---|---|
+| This README | [`AGENTS.md`](AGENTS.md) — the operating card (start here) |
+| `docs/<game>/run_status.md` — the progress report the agent writes | [`START_HERE.md`](START_HERE.md) — the boot sequence |
+| | [`docs/`](docs/README.md) — the method (charter, lifecycle, pitfalls, cookbook, checklist) |
+| | [`prompts/`](prompts/README.md) — task rituals |
+| | `dos_re/docs/` — the framework's reference manual |
+
+`MIGRATION.md` records where every file in this ecosystem came from
+(maintainer provenance, not workflow).
 
 ## License
 

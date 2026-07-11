@@ -5,12 +5,12 @@ some mechanisms are inseparably welded to their game's addresses and layouts.
 But every one of them **solved a problem your game will likely also have**,
 and the worked example is sitting on disk. This is the problem-indexed map.
 
-The worked examples live in the sibling repositories:
-`D:\Games\DOS\pre2_port` (P2 — also github.com/missingno7/pre2_port) and
-`D:\Games\DOS\overkill_port` (OK). Paths below are relative to those repos.
-If neither is available on your machine, the entries below still carry the
-essential shape of each technique — enough to re-derive it against your own
-oracle; treat the missing example as lost convenience, not lost method.
+The worked examples live in the sibling repositories: `pre2_port` (P2 —
+github.com/missingno7/pre2_port) and `overkill_port` (OK), typically checked
+out next to this repo. Paths below are relative to those repos. If neither is
+available on your machine, the entries below still carry the essential shape
+of each technique — enough to re-derive it against your own oracle; treat the
+missing example as lost convenience, not lost method.
 When you re-implement one of these for a new game, read the original first —
 each encodes debugging that took days — and if your version comes out generic,
 promote it (see `roadmap.md`, "parameterize-and-promote").
@@ -127,7 +127,7 @@ byte-exact (and was correct on a flag tail the *hand* version got wrong).
 coverage of the *verification* frontier, not the *understanding* frontier, so
 they live in their own `<game>/lifted/` tier with their own JSON proof ledger
 (`dos_re.lift.manifest`), disjoint from `@oracle_link` islands. A lift becomes
-recovered source only after a human/AI renames and simplifies it into clean
+recovered source only after the agent renames and simplifies it into clean
 Python and tags it `@oracle_link` — with the same oracle test unchanged. Never
 let a wall of unread-but-verified lifted code inflate the campaign's
 "recovered %".

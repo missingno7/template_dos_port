@@ -1,8 +1,16 @@
 # START_HERE — you are the porting agent
 
-You are an AI agent (or a human — same rules) who has been given this
-framework and a DOS game to port. This file is the boot sequence. Everything
-else is reachable from here.
+You are an AI agent who has been given this repository and a DOS game to port.
+This file is the boot sequence; everything else is reachable from here.
+([`AGENTS.md`](AGENTS.md) is the one-page operating card distilled from this —
+if you only cache one file, cache that one.)
+
+The human's role is deliberately small: they put the game files in `assets/`,
+and when you ask, they record demos, provide saves/screenshots/snapshots, and
+playtest. They do **not** reverse-engineer, read ASM, or drive this workflow —
+you do. Requests to the human must be concrete (exact command + what to do
+in-game + where the artifact lands); the request patterns are in
+[`AGENTS.md`](AGENTS.md) §"Requesting things from the human".
 
 ## What you are building
 
@@ -25,12 +33,16 @@ equivalence. ([`docs/lifecycle.md`](docs/lifecycle.md) tells the whole arc.)
    [`prompts/`](prompts/README.md) — every task ends with its accountability
    REPORT block, and status claims follow the ladder (never present OBSERVED
    work as VERIFIED).
-2. **Set up the workspace.** The game's files (EXE + data) go in `assets/`
-   (gitignored — original game files are never committed). Create your adapter
-   package **in this repository, at the root, next to the `dos_re/`
-   submodule** — e.g. `mygame/` — by copying the shape of
-   [`examples/adapter_skeleton/`](examples/adapter_skeleton/README.md). (This
-   repo, with `dos_re` wired in as a git submodule, is the expected workflow.)
+2. **Check for a port in flight.** `git log` + `docs/<game>/run_status.md` +
+   `docs/<game>/blockers.md` are the resume state — a previous session (or a
+   previous agent) may already be mid-campaign. Resume from the ledgers; never
+   restart bring-up on a repo that has islands.
+3. **Set up the workspace** (fresh port only). The game's files (EXE + data)
+   go in `assets/` (gitignored — original game files are never committed; if
+   it's empty, ask the human). Create your adapter package **in this
+   repository, at the root, next to the `dos_re/` submodule** — e.g.
+   `mygame/` — by copying the shape of
+   [`examples/adapter_skeleton/`](examples/adapter_skeleton/README.md).
    Then wire the conventions in: your tests go in `tests/` and **must skip
    when `assets/` is missing** (CI has no game files — copy the pattern from
    `dos_re/tests/test_tiny_frame_game.py`), add `mygame` to
@@ -47,20 +59,49 @@ equivalence. ([`docs/lifecycle.md`](docs/lifecycle.md) tells the whole arc.)
    [`scripts/play.py`](scripts/play.py) (the standard play runner you will
    adapt; a thin `GameFrontend` over `dos_re.player`) already does it —
    copy its `ROOT`/`sys.path` header for any further scripts.
-3. **Start the ledgers** (empty is fine): `docs/<game>/run_status.md` (current
-   phase, recent findings), `docs/<game>/symbol_ledger.md` (addresses →
-   evidence), `docs/<game>/blockers.md` (see the loop protocol), and the
-   generated island manifest (`dos_re/tools/gen_island_manifest.py`).
-4. **Follow [`docs/porting_new_game.md`](docs/porting_new_game.md)** step by
+4. **Start the ledgers** (empty is fine): `docs/<game>/run_status.md` (current
+   phase, recent findings — its summary is also the human's progress report,
+   keep it readable), `docs/<game>/symbol_ledger.md` (addresses → evidence),
+   `docs/<game>/blockers.md` (see the loop protocol), and the generated island
+   manifest (`dos_re/tools/gen_island_manifest.py`).
+5. **Follow [`docs/porting_new_game.md`](docs/porting_new_game.md)** step by
    step: load & run → see output → find frame boundaries → stand up the frame
    verifier → build the input-wait registry → record the first demo → start
    the lifting loop.
-5. **Keep the owner in the loop.** `python dos_re/tools/view.py --exe
-   assets/<GAME>` is the generic live window (plus `dos_re/tools/render_frame.py`
-   for PNG evidence) — use it to show progress and gather the owner's feedback
-   on how the game
-   *runs*; the oracle judges whether the code is *correct*. Those are
-   different jobs, and both matter.
+6. **Keep the human in the loop.** `python dos_re/tools/view.py --exe
+   assets/<GAME>` is the generic live window (plus
+   `dos_re/tools/render_frame.py` for PNG evidence) — use it to show progress
+   and gather the human's feedback on how the game *runs*; the oracle judges
+   whether the code is *correct*. Those are different jobs, and both matter.
+
+## Mechanical tools first
+
+Never hand-derive what a tool can measure, generate, or prove. The standing
+order: **probe → profile → lift → verify**, and only read ASM where the tools
+stop. The question→tool table is in [`AGENTS.md`](AGENTS.md); the three that
+save the most time:
+
+- **`dos_re/tools/profile_hotspots.py`** before any manual tracing — it finds
+  the wait loops (tight backward edges) and the real cost centres (boundary
+  crossings), which are your frame boundaries and first lift targets.
+- **The automatic lifter** before any hand translation —
+  `liftgen.py` censuses which entries are mechanically liftable;
+  `liftverify.py` emits a literal Python hook and proves it against the ASM
+  oracle every time it runs. You refactor a *verified* artifact into clean
+  recovered code; you do not decompile from scratch
+  ([`docs/porting_new_game.md`](docs/porting_new_game.md) step 7).
+- **Demo replay** before any claim — a change is proven by the corpus
+  replaying identically, not by your reading of the diff.
+
+## Phase map
+
+| Phase | You produce | Exit condition |
+|---|---|---|
+| Bring-up ([`porting_new_game.md`](docs/porting_new_game.md) steps 0–6) | adapter, boot snapshot, rendered frame, frame verifier, input-wait registry, first promoted demo | no-op candidate passes frame verify; the demo replays identically under every driver |
+| Lifting loop (step 7, charter Phase 1) | `lifted/` + proof ledger; `recovered/` + `@oracle_link`; goldens | every slice verified vs the ASM oracle; demo suite green at every commit |
+| Subsystems (lifecycle stages 3–4, charter Phases 2–4) | state mirror; collapsed hook chains; native tick driver | a subsystem reproduces frame/state from a snapshot **without stepping the VM** |
+| The flip (stage 5, charter Phases 5–6) | boot constants; native runner; verification switch | full demo corpus passes native-vs-VM tick-by-tick; zero interpreted instructions in the hot path |
+| Enhancements (stage 6 — only now) | the enhanced presentation layer | parity gate: enhanced-at-neutral ≡ faithful, pixel- and state-exact |
 
 ## The loop protocol (how work proceeds, slice by slice)
 
@@ -83,8 +124,7 @@ Proven over months of autonomous recovery on the source ports:
 6. **Check for existing mechanisms before building.** The framework and your
    own adapter likely already have the tool (the module map in
    [`docs/architecture.md`](dos_re/docs/architecture.md), the `dos_re/tools/`
-   directory) —
-   and for problems the framework does NOT solve in code, check
+   directory) — and for problems the framework does NOT solve in code, check
    [`docs/cookbook.md`](docs/cookbook.md) FIRST: it maps symptoms (busy-wait
    crawl, runtime-patched code, resident audio driver, slow probes, cold-start
    endgame…) to proven worked examples in the source repos. Re-deriving one of
@@ -93,12 +133,26 @@ Proven over months of autonomous recovery on the source ports:
    manifest for progress, the symbol ledger for evidence. The next agent (or
    the next session of you) resumes from git + these files alone.
 
+## On failure — the routing table
+
+| Symptom | Do this |
+|---|---|
+| A hook diverges from the oracle | `OK_TRACE_HOOK=CS:IP`, reproduce, read what the original actually did ([`prompts/diagnose_hook_divergence.md`](prompts/diagnose_hook_divergence.md)). After ~2 focused attempts: revert + log the blocker. |
+| A demo freezes or deadlocks on replay | You missed a boundary-less input-wait loop — charter §6. Find its canonical head, register it in the adapter's `input_waits.py` (shared by ALL drivers), re-record nothing: the fix is in the driver, not the demo. |
+| The VM fails loud (unimplemented opcode / DOS call / port) | The framework is asking to grow. Extend `dos_re/` under [`dos_re/AGENTS.md`](dos_re/AGENTS.md): implement the *observed* behaviour only, match flags for the observed use, add a focused test. |
+| Headless runs crawl | [`docs/cookbook.md`](docs/cookbook.md) "Timing and speed" — deterministic fast-forward, walk-shadow cache. Read pitfalls #12–14 before touching timing. |
+| `liftgen` refuses an entry | Its census says why (indirect jumps and x87 are the usual refusals). Hand-recover only that piece; keep lifting around it. |
+| You can't drive the game past the menus / can't reach a state | Ask the human for a recorded demo — give them the exact `--record-demo` command and what to play. |
+| A rebuilt buffer won't match (menu pages, scroll rings) | It's history-dependent state — pitfall #11. Replay the real sequence from a known init or recover the exact invariant; mark it *blocked* rather than guessing a stateless model. |
+| A divergence appears minutes into a demo | Suffix repro: `InputDemoPlayback.write_suffix` carves a snapshot + rebased tail at the divergence — resume there, not from the start. |
+| Verification passes but the game *feels* wrong to the human | Trust both signals: the oracle proves state; the human hears pacing/audio. Check the pacing model and the boundary clock (cookbook "play.py" entry) before doubting the oracle. |
+
 ## The framework is a living organism
 
 Your game WILL exercise CPU instructions, DOS services, and hardware behaviour
 the previous games didn't. Extending `dos_re/` is part of the job — under its
-rules ([`AGENTS.md`](dos_re/AGENTS.md)): stdlib-only, game-agnostic, add only what
-your executable *proves* it needs, document the observed register/flag
+rules ([`AGENTS.md`](dos_re/AGENTS.md)): stdlib-only, game-agnostic, add only
+what your executable *proves* it needs, document the observed register/flag
 contract, add a focused test, keep it deterministic by default. When the VM
 fails loud on an unimplemented opcode or port, that is the framework asking to
 grow — implement the observed behaviour, never a datasheet's generality. If

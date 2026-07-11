@@ -155,7 +155,7 @@ maintained separately. → Two truths for palette/camera/HUD state that drifted
 apart. → *One canonical capture; the semantic/enhanced model is DERIVED from
 it, never maintained beside it.*
 
-## Working style (human or AI)
+## Working style (agent sessions)
 
 **19. Broad speculative changes.** [OK] Autonomous sessions occasionally
 attempted multi-subsystem refactors or "fixed" a divergence by weakening the

@@ -1,14 +1,14 @@
 # Prompt pack — standard rituals for recovery tasks
 
-Each file here is a self-contained task brief for an AI agent (or a human
-following the same discipline). They exist so the workflow is **encoded, not
-tribal**: every task ends with the same accountability block, and no task lets
-plausible output masquerade as verified output.
+Each file here is a self-contained task brief for the AI porting agent. They
+exist so the workflow is **encoded, not tribal**: every task ends with the
+same accountability block, and no task lets plausible output masquerade as
+verified output.
 
 Use: open the prompt for the task at hand, follow it, and fill in its REPORT
-block before finishing. `START_HERE.md` routes here; the loop protocol there
-(smallest slice, never commit red, revert + log blockers) applies to every
-prompt.
+block before finishing. `AGENTS.md`/`START_HERE.md` route here; the loop
+protocol there (smallest slice, never commit red, revert + log blockers)
+applies to every prompt.
 
 ## The accountability block (every task ends with this)
 
