@@ -268,8 +268,12 @@ guesses / frontiers), gap list, and merge plan. Worked examples:
 → **Shipped in this repo**: `scripts/overnight_loop.sh` (the relaunch
 harness — a fresh agent against a standing goal brief whenever one stops;
 all state in git + the ledgers, so nothing is lost) + the goal-brief
-template `examples/ledgers/overnight_goal.md` (done-condition, gates,
-work-queue buckets; run_status's frontier statement overrides the queue).
+template `examples/ledgers/overnight_goal.md` (preconditions checklist,
+done-condition, gates, work-queue buckets; run_status's frontier statement
+overrides the queue). Deploy it in the MIDDLE of the port — the hook/lift
+grind after the game is fully runnable and the corpus spans gameplay
+(ideally e2e cold-start demos); the corpus is what makes unattended commits
+safe. Bring-up and the flip's design decisions stay attended.
 Worked examples of a long campaign's brief evolving:
 `overkill_port/scripts/overnight_loop.sh`,
 `docs/overkill/overnight_endgame_execution.md`, `loop_blockers.md`. The

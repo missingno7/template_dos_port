@@ -110,7 +110,9 @@ save the most time:
 Proven over months of autonomous recovery on the source ports (for unattended
 multi-hour runs, [`scripts/overnight_loop.sh`](scripts/overnight_loop.sh) is
 the relaunch harness that enforces this protocol against a standing goal
-brief — template: `examples/ledgers/overnight_goal.md`):
+brief — template: `examples/ledgers/overnight_goal.md`. It belongs to the
+lifting phase: deploy only once the game is fully runnable and the demo
+corpus spans gameplay — the brief's §0 preconditions):
 
 1. **One slice per iteration** — one routine, one field naming, one raw-offset
    drain; the smallest coherent unit. Not a subsystem.

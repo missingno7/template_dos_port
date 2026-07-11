@@ -5,13 +5,37 @@
      the live "what next" belongs in run_status.md (see §2), not here. Copy into
      docs/<game>/ and fill in every <...>. -->
 
+## 0. Preconditions (do NOT run unattended before these hold)
+
+Unattended safety rests entirely on the mechanical gates — "never commit red"
+only protects the run if red is *detectable*. The harness pays off in the
+**middle** of a port: the massive hook/lift grind after bring-up's
+judgment-heavy work (seams, wait loops, VM gaps) is done and before the flip's
+design decisions. Check every box before the first overnight run:
+
+- [ ] The game is **fully runnable** in the VM: bring-up steps 0–6 complete,
+      no-op frame verify passes, the input-wait registry is stable (demos
+      replay identically under every driver — no freezes).
+- [ ] The **demo corpus spans gameplay** — ideally e2e COLD-START demos, and
+      it reaches death, respawn, level-end, game-over (pitfall #22). The
+      corpus IS the commit gate; its blind spots are where an unattended
+      agent silently regresses.
+- [ ] The demo suite runs **headless and fast enough** to gate every slice
+      (cookbook "Timing and speed" if replays crawl).
+- [ ] A `liftgen` census exists, so the work queue is measured, not guessed.
+
+Before these hold, run attended sessions instead — bring-up needs judgment
+per step, and each mistake there (a mis-set boundary, a missed wait loop)
+silently voids the very demos the overnight gates depend on.
+
 ## 1. Done-condition (the loop stops when this holds)
 
-<!-- One measurable statement, checkable by command. Examples by phase:
-     bring-up:  "the first promoted demo replays identically under every driver"
-     lifting:   "native % >= <N> over <demo> with zero demo-suite divergence"
-     the flip:  "verify_ticks green on every corpus recording; zero interpreted
-                 instructions in the hot path"                                     -->
+<!-- One measurable statement, checkable by command. For the lifting-phase
+     campaign this harness is built for:
+       "native % >= <N> over the corpus with zero demo-suite divergence"
+       "every liftable census entry ORACLE_PASSING or blocked-with-entry"
+     (A flip-phase brief is possible but needs attended design first:
+       "verify_ticks green on every corpus recording".)                        -->
 
 <done-condition + the exact command(s) that prove it>
 

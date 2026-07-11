@@ -15,6 +15,12 @@
 # The goal brief is the binding document — copy the template from
 # examples/ledgers/overnight_goal.md into docs/<game>/ and fill it in first.
 #
+# WHEN TO DEPLOY: the middle of the port — the massive hook/lift grind AFTER the game is
+# fully runnable in the VM and a demo corpus spans gameplay (ideally e2e cold-start demos,
+# reaching death/level-end/game-over). The corpus is what makes unattended commits safe;
+# the brief's §0 preconditions checklist is the gate. Bring-up and the flip's design
+# decisions stay attended.
+#
 # WARNING: the default agent command skips permission prompts so the agent can edit, run,
 # and commit unattended. The safety is the loop protocol the brief binds it to (never commit
 # red, never weaken an oracle, revert + log any failed attempt). Run it on a branch you are
