@@ -62,12 +62,13 @@ is the provenance record. The shortlist:
   documented discipline (charter §6) + the adapter's input-wait registry;
   promote a shared `BoundaryClock` type if a second game's drivers start
   drifting despite the docs.
-- **Stage-6 presentation widgets** (gated on a SECOND port reaching the
-  post-endgame): the in-game overlay settings menu
-  (`pre2_port/scripts/overlay_menu.py` — already game-import-free, modal
-  determinism firewall) and the two-snapshot interpolation presenter
-  (`pre2/bridge/frame_capture.py` pattern). Playbook:
+- ~~In-game overlay settings menu~~ **Done** (`dos_re/overlay_menu.py`):
+  promoted from pre2_port — pygame-injected, items-as-data closures, modal
+  determinism firewall, and the tab accuracy taxonomy (presentation /
+  Experimental quarantine / debug-gated cheats) in its docstring. Playbook:
   [`post_endgame.md`](post_endgame.md).
+- **Two-snapshot interpolation presenter** (`pre2/bridge/frame_capture.py`
+  pattern) — gated on a SECOND port reaching Stage 6.
 
 ## Longer-term shape
 
