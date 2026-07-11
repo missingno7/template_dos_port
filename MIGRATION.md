@@ -125,6 +125,22 @@ is modeled and reference the oracle evidence).
   helpers, but they only serve a game viewer; left for adapters to copy from
   the source repos if wanted.
 
+## Later promotions into the framework (post-split provenance)
+
+Recorded as the roadmap's parameterize-and-promote items graduate (this is the
+ledger the roadmap points to):
+
+| Landed | dos_re module | Promoted from | Notes |
+|---|---|---|---|
+| 2026-07-11 | `dos_re/tick_demo.py` | pre2_port `pre2/native/game_tick_demo.py` + `scripts/verify_native_tick_demo.py` | The endgame equivalence engine, generalized: named u16 sidebands replace the hardcoded idle-timer channel; seams/masks/tick fn stay adapter-side. pre2 keeps its proven pre-framework pipeline unchanged. |
+| 2026-07-11 | `dos_re/coverage.py` | overkill_port `overkill/coverage.py` (generic core) | The measured native-% collector: ASM-equivalent accounting, cache-estimated unverified runs, loud UNMEASURED bucket. Overkill's regions/category rollups/Tk dashboard stay game-side. |
+| 2026-07-11 | `dos_re/overlay_menu.py` | pre2_port `scripts/overlay_menu.py` | Promoted verbatim (it was already game-import-free, pygame-injected); the docstring gained the tab accuracy taxonomy (presentation / Experimental quarantine / debug). pre2 now vendors it back byte-identical with a drift test (its APK ships no framework code). |
+| 2026-07-11 | `template_dos_port/scripts/overnight_loop.sh` + `examples/ledgers/overnight_goal.md` | overkill_port `scripts/overnight_loop.sh` + `docs/overkill/overnight_endgame_execution.md` | The unattended relaunch harness + goal-brief shape, generalized (template-side, not dos_re — it is methodology machinery). |
+
+New (not promotions, origin = this repo/dos_re directly): `dos_re/tools/check_doc_links.py`,
+`dos_re/tools/tick_demo_info.py`, `tick_demo.replay_to`/`TickDemo.suffix` (the
+divergence-repro pair, modeled on `InputDemoPlayback.write_suffix`).
+
 ## Known cleanup / TODO (honest list)
 
 1. **`dos_re/asm.py::_ega_next_scanline_di`** — generic *idiom*, Overkill-verified
