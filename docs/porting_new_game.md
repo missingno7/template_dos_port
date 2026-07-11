@@ -170,19 +170,28 @@ what tells you how far the port is.
 
 ## 8. Stand up coverage telemetry
 
-The CPU only provides the *hook points*: if `cpu.coverage_telemetry` is set,
-the interpreter calls `record_interpreted_instruction(...)` per interpreted
-step and the hook/verifier paths call `record_hook_verified/unverified/
-skipped(...)`. **The collector object itself is yours to build in the
-adapter** — the framework ships none. Implement those methods, classify
-addresses into islands there, and assign the object after creating the
-runtime. The proven worked example is `overkill/coverage.py` (see
-[`cookbook.md`](cookbook.md) "Progress and process machinery").
+The collector is a **framework engine now** — `dos_re.coverage.CoverageCollector`
+implements the `cpu.coverage_telemetry` hook points; your adapter supplies
+only the address→island **classifier**:
+
+```python
+from dos_re.coverage import CoverageCollector
+cov = CoverageCollector(classifier=my_addr_to_island,
+                        cache_path=Path("artifacts/coverage_cache.json"))
+rt.cpu.coverage_telemetry = cov
+# ... replay a demo ...
+print(cov.format_summary()); cov.save_cache()
+```
 
 The headline metric, defined precisely so reports are comparable: **native %
-= hooked-step count / (hooked + interpreted step counts), accumulated over a
-full demo replay** (`cpu.step()` invocations, not instruction_count); report
-it overall and per island.
+= hook-covered ASM-equivalent instructions / all measured work**, accumulated
+over a full demo replay. Hooked work is measured by the verifier (the
+replaced-instruction count per verified call), estimated from the JSON cache
+on unverified runs, and reported *unmeasured* — outside the percentage —
+when neither exists; wrap oracle reference runs in `cov.bounded_original()`.
+Report it overall and per island. The richer game-side build-out (regions,
+category rollups, a live dashboard) is `overkill/coverage.py` (see
+[`cookbook.md`](cookbook.md) "Progress and process machinery").
 
 ## Then: the phased roadmap
 

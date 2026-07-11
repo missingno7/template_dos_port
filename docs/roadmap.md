@@ -38,8 +38,12 @@ is the provenance record. The shortlist:
   pre2_port's `game_tick_demo.py`. The adapter supplies the seams, the
   ownership mask, and the tick function; dos_re's `agent_toolbox.md` §12 is
   the usage skeleton.
-- **Coverage-telemetry classifier** (the generic engine inside
-  `overkill/coverage.py`, island taxonomy parameterized).
+- ~~Coverage-telemetry classifier~~ **Done** (`dos_re/coverage.py`): the
+  generic collector engine from `overkill/coverage.py` — verifier-measured
+  ASM-equivalent accounting, cache-estimated unverified runs, loud
+  UNMEASURED bucket, `bounded_original` oracle spans, per-island report; the
+  adapter supplies only the address→island classifier. Overkill's regions /
+  category rollups / Tk dashboard stay game-side.
 - **Headless verification driver** (pluggable runtime factory).
 - **Probe harness + walk-shadow cache** (delta-encoded per-frame state cache).
 - ~~Runtime-code staticization registry~~ **Done** (`dos_re/runtime_code.py`):

@@ -250,9 +250,11 @@ example: `pre2_port/scripts/play.py`.
 ## Progress and process machinery
 
 **Measured progress reporting (interpreted vs native %, per-island).**
-→ Coverage classifier + dashboards: the CPU's `coverage_telemetry` feeds an
-island classifier; scripts render per-layer/per-island reports and flag
-oversized files. Worked examples: `overkill/coverage.py`,
+→ **Now a framework engine**: `dos_re/coverage.py` (`CoverageCollector` on
+`cpu.coverage_telemetry`; the adapter supplies only the address→island
+classifier — wire-up snippet in dos_re's `docs/agent_toolbox.md` §13). The
+richer game-side build-out — region grouping, category rollups, dashboards,
+oversized-file flags — remains the worked example: `overkill/coverage.py`,
 `overkill/scripts/source_port_status.py`, `scripts/audit_islands.py`.
 
 **Documenting a subsystem campaign so the next session can continue it.**

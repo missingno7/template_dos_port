@@ -179,9 +179,11 @@ it knows your game's addresses or formats, it stays in your adapter.
 
 ## Progress is measured, not vibed
 
-- Native % over a demo replay (hooked / total `cpu.step()` counts) — the CPU
-  exposes `coverage_telemetry` hook points; **your adapter builds the
-  collector** (porting guide step 8; worked example in the cookbook).
+- Native % over a demo replay — `dos_re.coverage.CoverageCollector` on
+  `cpu.coverage_telemetry`; your adapter supplies only the address→island
+  classifier (porting guide step 8). Hooked work is measured in verifier-
+  reported ASM-equivalent instructions; the unmeasurable is reported OUTSIDE
+  the percentage, never guessed into it.
 - The generated island manifest (count × confidence ladder).
 - Demo-corpus coverage and pass rate.
 - The glue-hook count (falling is good) and the frontier manifest

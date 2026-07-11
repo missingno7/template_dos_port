@@ -38,7 +38,7 @@ tool first; read ASM only where the tools stop.
 | First draft of a routine's Python? | The automatic lifter: `liftgen.py` (census: what's liftable and why not) → `liftverify.py` (lift + prove vs the ASM oracle, proof ledger). Refactor from the verified artifact; never hand-translate a first draft. |
 | Is my hook byte-exact? | The hook verifier (strict mode), `OK_TRACE_HOOK=CS:IP` for the divergence trace |
 | Does the whole game still match? | Frame verifier + demo replay (`--verify-frames`, the demo corpus) |
-| How far along is the port? | `python dos_re/tools/gen_island_manifest.py` + the coverage-telemetry collector you build (native %) |
+| How far along is the port? | `python dos_re/tools/gen_island_manifest.py` + `dos_re.coverage.CoverageCollector` (native %; the adapter supplies only the address→island classifier) |
 | Did I break a layering rule? | `python dos_re/tools/lint.py`, `python dos_re/tools/audit_layers.py <game>/recovered`, `dos_re/tools/audit_hook_oracle.py` |
 | A problem the tools don't solve? | [`docs/cookbook.md`](docs/cookbook.md) FIRST — symptom-indexed, each entry cost days once already |
 
