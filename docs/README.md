@@ -30,6 +30,9 @@ Related, outside `docs/`:
   type, ending in an accountability REPORT block.
 - [`../examples/adapter_skeleton/`](../examples/adapter_skeleton/README.md) —
   the template for a new game adapter.
+- [`../examples/ledgers/`](../examples/ledgers/README.md) — the ledger
+  templates (`run_status`, `blockers`, `symbol_ledger`, `demo_manifest`)
+  copied into `docs/<game>/` at port start.
 - The framework's own reference manual lives in the submodule:
   [`../dos_re/docs/README.md`](../dos_re/docs/README.md) (architecture, hook
   and frame verification mechanics, demos/snapshots, state mirrors, hardware

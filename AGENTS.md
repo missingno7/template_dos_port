@@ -94,7 +94,8 @@ artifact lands.
 ## Reporting
 
 Every session ends with the ledgers current
-([`prompts/write_recovery_status.md`](prompts/write_recovery_status.md)) and
+([`prompts/write_recovery_status.md`](prompts/write_recovery_status.md);
+ledger templates: [`examples/ledgers/`](examples/ledgers/README.md)) and
 every task ends with its REPORT block ([`prompts/`](prompts/README.md)).
 Status claims follow the ladder (GUESS → OBSERVED → RECOVERED → ASM_MATCHED →
 VERIFIED → CANONICAL) — never present a lower rung as a higher one.

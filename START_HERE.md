@@ -59,11 +59,13 @@ equivalence. ([`docs/lifecycle.md`](docs/lifecycle.md) tells the whole arc.)
    [`scripts/play.py`](scripts/play.py) (the standard play runner you will
    adapt; a thin `GameFrontend` over `dos_re.player`) already does it —
    copy its `ROOT`/`sys.path` header for any further scripts.
-4. **Start the ledgers** (empty is fine): `docs/<game>/run_status.md` (current
-   phase, recent findings — its summary is also the human's progress report,
-   keep it readable), `docs/<game>/symbol_ledger.md` (addresses → evidence),
-   `docs/<game>/blockers.md` (see the loop protocol), and the generated island
-   manifest (`dos_re/tools/gen_island_manifest.py`).
+4. **Start the ledgers** — copy the templates from
+   [`examples/ledgers/`](examples/ledgers/README.md) into `docs/<game>/`:
+   `run_status.md` (current phase + findings — its summary is also the human's
+   progress report, keep it readable), `symbol_ledger.md` (addresses →
+   evidence), `blockers.md` (see the loop protocol), `demo_manifest.md` (the
+   corpus and its blind spots), plus the generated island manifest
+   (`dos_re/tools/gen_island_manifest.py` — generated, never hand-edited).
 5. **Follow [`docs/porting_new_game.md`](docs/porting_new_game.md)** step by
    step: load & run → see output → find frame boundaries → stand up the frame
    verifier → build the input-wait registry → record the first demo → start

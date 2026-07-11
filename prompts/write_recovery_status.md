@@ -19,9 +19,12 @@ false confidence poisons every plan built on it.
    - open blockers (from the blocker file) with age;
    - raw-offset count remaining in recovered logic (state-mirror progress);
    - frontier manifest state, if coverage has converged that far.
-3. **Narrate the deltas** in `docs/<game>/run_status.md`: what landed (with
-   the verifier that proved it), what was reverted and why, what changed in
-   the framework core (with the oracle evidence that justified it).
+3. **Narrate the deltas** in `docs/<game>/run_status.md` (shape:
+   `examples/ledgers/run_status.md`): what landed (with the verifier that
+   proved it), what was reverted and why, what changed in the framework core
+   (with the oracle evidence that justified it). Refresh the top **Summary**
+   in plain language — it is the human owner's progress report; no addresses,
+   no jargon.
 4. **Name the risks explicitly**: the largest unverified surface, the demo
    corpus's blind spots, any "modeled but approximate" hardware in play, any
    status-ladder claims that rest on a single oracle case.
