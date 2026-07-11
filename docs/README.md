@@ -18,6 +18,7 @@ Reading order: `lifecycle.md` → `ai_porting_charter.md` → `pitfalls.md` →
 | [`methodology.md`](methodology.md) | The naming/altitude discipline: evidence ladder, status ladder (GUESS → CANONICAL), crystallization pyramid, hook lifecycle, fail-fast over guessed fallback. |
 | [`porting_new_game.md`](porting_new_game.md) | The concrete bring-up checklist for a new game, step 0 → the lifting loop, plus the endgame steps and the code-heavy vs data-driven game styles. |
 | [`enhancements.md`](enhancements.md) | The enhanced layer as the ENDGAME (sequencing rule + the audio exception), the faithful/enhanced boundary, the parity gate, and the widescreen / pixel-aspect lessons. |
+| [`post_endgame.md`](post_endgame.md) | **GATED — read only after the flip.** The post-endgame playbook: the human taste loop (agent-executed, human-steered), the fps-first-interpolation-second ladder, the technique catalog (F10 overlay menu, interpolation, transitions, widescreen, new hosts), the promotion path. |
 | [`roadmap.md`](roadmap.md) | What's next, what waits for the next port, long-term shape, and decided non-goals. |
 
 Related, outside `docs/`:

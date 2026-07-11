@@ -53,7 +53,7 @@ Full detail: [`docs/porting_new_game.md`](docs/porting_new_game.md) (steps) and
 | Lifting loop (step 7) | `lifted/` + proof ledger, `recovered/` + `@oracle_link`, goldens | each slice verified vs the ASM oracle; demo suite green after every commit |
 | Subsystems (stages 3–4) | state mirror, collapsed chains, native tick driver | a subsystem reproduces its frame/state from a snapshot **without stepping the VM** |
 | The flip (stage 5) | boot constants, native runner, verification switch, the tick-demo adapter (`dos_re.tick_demo`: seams, ownership mask, sidebands, tick fn) | full demo corpus passes native-vs-VM tick-by-tick (`verify_ticks` green on every recording); zero interpreted instructions in the hot path |
-| Enhancements (stage 6 — only now) | enhanced presentation layer | parity gate: enhanced-at-neutral ≡ faithful, pixel- and state-exact |
+| Enhancements (stage 6 — only now) | enhanced presentation layer ([`docs/post_endgame.md`](docs/post_endgame.md) — human-steered: expect taste feedback per slice) | parity gate: enhanced-at-neutral ≡ faithful, pixel- and state-exact |
 
 ## The loop (every slice)
 

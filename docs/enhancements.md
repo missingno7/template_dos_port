@@ -1,5 +1,10 @@
 # The enhanced layer — faithful core first, presentation last
 
+> This file is the **rules** (sequencing, the read-only boundary, the parity
+> gate). The post-endgame **workflow** — the human taste loop, the
+> fps-vs-interpolation ladder, the technique catalog (F10 menu, transitions,
+> hosts) — is [`post_endgame.md`](post_endgame.md), gated until the flip.
+
 The Prehistorik 2 port shipped modern comforts (widescreen, frame
 interpolation, smooth transitions, stereo SFX, scaling) *without ever
 diverging from the verified game*. That worked because of two rules — one

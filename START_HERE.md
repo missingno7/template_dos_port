@@ -103,7 +103,7 @@ save the most time:
 | Lifting loop (step 7, charter Phase 1) | `lifted/` + proof ledger; `recovered/` + `@oracle_link`; goldens | every slice verified vs the ASM oracle; demo suite green at every commit |
 | Subsystems (lifecycle stages 3–4, charter Phases 2–4) | state mirror; collapsed hook chains; native tick driver | a subsystem reproduces frame/state from a snapshot **without stepping the VM** |
 | The flip (stage 5, charter Phases 5–6) | boot constants; native runner; verification switch; the tick-demo adapter over `dos_re.tick_demo` (seams, ownership mask, sidebands, tick fn — porting guide endgame step 4) | full demo corpus passes native-vs-VM tick-by-tick (`verify_ticks` green on every recording); zero interpreted instructions in the hot path |
-| Enhancements (stage 6 — only now) | the enhanced presentation layer | parity gate: enhanced-at-neutral ≡ faithful, pixel- and state-exact |
+| Enhancements (stage 6 — only now) | the enhanced presentation layer ([`docs/post_endgame.md`](docs/post_endgame.md) — agent-executed, human-steered: the taste loop) | parity gate: enhanced-at-neutral ≡ faithful, pixel- and state-exact |
 
 ## The loop protocol (how work proceeds, slice by slice)
 
