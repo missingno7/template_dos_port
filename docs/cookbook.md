@@ -135,12 +135,16 @@ let a wall of unread-but-verified lifted code inflate the campaign's
 ## Verification depth (the endgame)
 
 **Proving the native port equals the VM, tick by tick, over whole playthroughs.**
-→ *Tick-demo harness*: record seed + per-tick input + a gameplay-state digest
-(render-only ranges masked out — ONE digest definition shared with the forward
-oracle), replay through both, compare per tick. Includes the non-obvious
-lesson: state derived from instruction count (P2's idle-fidget timer) must be
-*recorded and injected*, since the native port has no instruction count.
-Worked examples: `pre2/native/game_tick_demo.py`,
+→ *Tick-demo harness* — **now a framework engine**: `dos_re/tick_demo.py`
+(`TickDemo` + `masked_digest` + `record_ticks` + `verify_ticks`; usage
+skeleton in dos_re's `docs/agent_toolbox.md` §12). Record seed + per-tick
+consumed input + a gameplay-state digest (render-only ranges masked out — ONE
+digest definition shared with the forward oracle), replay through the VM-less
+core, compare per tick. Includes the non-obvious lesson, now a first-class
+*sideband* channel: state derived from instruction count (P2's idle-fidget
+timer) must be *recorded and injected*, since the native port has no
+instruction count. Worked examples of the full pipeline (pre-framework, still
+the richest reference): `pre2/native/game_tick_demo.py`,
 `pre2_port/scripts/verify_finish_demo.py`, `scripts/verify_native_tick_demo.py`.
 
 **A divergence appears 10 minutes into a demo.**

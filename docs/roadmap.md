@@ -31,7 +31,13 @@ is the provenance record. The shortlist:
 
 - **Timing fast-forward** engine (closed-form wait collapsing; needs a
   per-game loop classification + clock model).
-- **Tick-demo equivalence harness** (seed + per-tick keys + state digest).
+- ~~Tick-demo equivalence harness~~ **Done** (`dos_re/tick_demo.py`):
+  `TickDemo` (seed + per-tick consumed keys + gameplay digests + named u16
+  sidebands), `masked_digest`, `record_ticks` (seam-address recorder with the
+  consumption-point refine pattern), `verify_ticks` — generalized from
+  pre2_port's `game_tick_demo.py`. The adapter supplies the seams, the
+  ownership mask, and the tick function; dos_re's `agent_toolbox.md` §12 is
+  the usage skeleton.
 - **Coverage-telemetry classifier** (the generic engine inside
   `overkill/coverage.py`, island taxonomy parameterized).
 - **Headless verification driver** (pluggable runtime factory).

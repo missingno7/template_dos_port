@@ -213,6 +213,14 @@ to "a standalone native game ships" (full rationale in
    oracle and the native core tick by tick and compare the data-segment image
    byte-exact. This — over a demo corpus that reaches death, respawn,
    level-end, and game-over — is the proof the flip changed nothing.
+   **The engine is a framework tool now**: `dos_re.tick_demo`
+   (`record_ticks`/`verify_ticks`/`masked_digest`; usage skeleton in dos_re's
+   `docs/agent_toolbox.md` §12). Your adapter supplies the tick seams, the
+   consumed-key capture points, the ownership mask, any sidebands
+   (instruction-count-derived state like an idle-fidget timer must be
+   *recorded and injected* — the native port has no instruction count), and
+   the tick function with its transition outcomes. Worked example of the whole
+   pipeline: pre2_port's `game_tick_demo.py` + `verify_native_tick_demo.py`.
 5. **A verification switch.** ON: the oracle runs beside the native game and
    diffs at boundaries. OFF: no VM starts. The shipped build contains no VM,
    no EXE, no fallback.
