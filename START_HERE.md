@@ -151,7 +151,8 @@ corpus spans gameplay — the brief's §0 preconditions):
 | `liftgen` refuses an entry | Its census says why (indirect jumps and x87 are the usual refusals). Hand-recover only that piece; keep lifting around it. |
 | You can't drive the game past the menus / can't reach a state | Ask the human for a recorded demo — give them the exact `--record-demo` command and what to play. |
 | A rebuilt buffer won't match (menu pages, scroll rings) | It's history-dependent state — pitfall #11. Replay the real sequence from a known init or recover the exact invariant; mark it *blocked* rather than guessing a stateless model. |
-| A divergence appears minutes into a demo | Suffix repro: `InputDemoPlayback.write_suffix` carves a snapshot + rebased tail at the divergence — resume there, not from the start. |
+| A divergence appears minutes into a demo | Suffix repro — resume right before the failure, never from the start: input demos via `InputDemoPlayback.write_suffix`; tick demos via `dos_re.tick_demo.replay_to` + `TickDemo.suffix` (the divergence then reproduces at the suffix's own tick 0). |
+| The native runner hits a gap or crashes | It must have written a resumable snapshot + printed the repro command (porting guide endgame step 2 — build that in from the runner's first day). Load the snapshot, reproduce in one step, recover the gap. |
 | Verification passes but the game *feels* wrong to the human | Trust both signals: the oracle proves state; the human hears pacing/audio. Check the pacing model and the boundary clock (cookbook "play.py" entry) before doubting the oracle. |
 
 ## The framework is a living organism

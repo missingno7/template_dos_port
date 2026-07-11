@@ -213,7 +213,12 @@ to "a standalone native game ships" (full rationale in
 2. **A native state + tick driver.** A byte-backed game state (the state
    mirror) plus a fixed-step frame driver at the original tick cadence, with
    explicit pacing. Do **not** port the busy-wait/retrace machinery; preserve
-   the heartbeat, not the spin.
+   the heartbeat, not the spin. **From day one, the native runner writes a
+   resumable snapshot + prints the exact repro command on every gap/crash**
+   (state image + a short state summary; `--snapshot <dir>` re-seeds from
+   it). `dos_re.player` gives VM runners this for free; the VM-less runner
+   implements the same — it is the endgame's biggest debug accelerator
+   (worked example: the completed port's `dump_gap_snapshot`).
 3. **Per-subsystem equivalence contracts.** Gameplay byte-exact; rendering
    pixel-exact but mechanism-flexible; audio event-exact but mixer-flexible;
    input semantic-exact. Write these down for your game before flipping, or

@@ -27,11 +27,14 @@ level-end, and game-over (pitfall #22 — a happy-path corpus proves little).
 3. **Verify**: seed the native state from the recording, `verify_ticks`. A
    terminal outcome (level-end / game-over / game-complete) legitimately ends
    that recording's compare; note the tick count it proved.
-4. **On divergence**: it is a real finding, never noise. Reproduce at the
-   reported tick, diff the digested state against the recording, and treat it
-   like any hook divergence (two focused attempts, then revert + blocker).
-   Common causes: a capture point at the wrong consumption site, a missing
-   sideband, render state leaking into the digest on ONE side only.
+4. **On divergence**: it is a real finding, never noise. First carve the
+   repro so every iteration is instant: `replay_to(demo, state, i)` +
+   `demo.suffix(i, captured_bytes)` — the divergence reproduces at the
+   suffix's own tick 0 instead of after i ticks. Then diff the digested
+   state against the recording and treat it like any hook divergence (two
+   focused attempts, then revert + blocker). Common causes: a capture point
+   at the wrong consumption site, a missing sideband, render state leaking
+   into the digest on ONE side only.
 5. **Report the corpus result** in `run_status.md` and the demo manifest:
    per demo — ticks proven, terminal outcome, or the open divergence.
 
