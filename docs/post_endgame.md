@@ -35,6 +35,38 @@ perturb the game or a demo).
 If a proposed enhancement can't meet the Presentation contract, it is not
 "almost safe" — it goes to Experimental, or it doesn't ship.
 
+## The bridge-free product (the packaging endgame)
+
+The end-user product must carry NONE of the verification machinery — the
+VM-facing "bridge" (frame capture, timing fast-forwards, hook glue) becomes a
+DETACHABLE package plugged in only when a proof runs. Make the boundary true
+**by construction** (the tree), not by deny-list alone:
+
+- **Split the seam package by MEASURED imports** (compute the product's real
+  import graph, transitive over top-level imports — do not guess): the pure
+  state-view / dataclass-reader modules the product needs go to a shipped
+  `views/`-style package; the VM-coupled glue stays behind as the workbench.
+  Watch both import forms (`from pkg.mod import x` AND `from pkg import mod`)
+  — a closure computed from one form ships a tree that breaks on import.
+- **Three enforcement layers**: a structural lint (shipped layers never import
+  the workbench or the emulator — top-level always; function-local stays the
+  fail-loud pattern for VM-needing flags), the deploy deny-list as the
+  belt-and-braces assert, and the deploy smoke test (N ticks + render on the
+  deployed tree, then assert no denied module ever entered `sys.modules`).
+- **Prove the split is a behavioral no-op with the proof corpus** — the whole
+  point of having it: full test suite, every tick demo byte-identical, the
+  4-gate front-end proof green, before and after. A repackaging this size is
+  safe exactly because the corpus exists.
+- The shipped `views/` package is then the landing zone for the READABILITY
+  lift: gameplay code stops naming raw offsets; the views layer is the one
+  place layout lives; the workbench maps it back to the original bytes when
+  verification plugs in.
+
+Worked example: pre2_port's `pre2/views/` (28 shipped state-view modules) vs
+`pre2/bridge/` (8 detachable workbench modules), enforced by its
+`scripts/lint.py` + `deploy_native.py` DENY; proven no-op by 907 tests + three
+tick demos + the 4-gate front-end proof.
+
 ## The workflow: agent-executed, human-steered
 
 Recovery had one judge (the oracle) and needed almost no human input. The
