@@ -6,14 +6,66 @@ But every one of them **solved a problem your game will likely also have**,
 and the worked example is sitting on disk. This is the problem-indexed map.
 
 The worked examples live in the sibling repositories: `pre2_port` (P2 —
-github.com/missingno7/pre2_port) and `overkill_port` (OK), typically checked
-out next to this repo. Paths below are relative to those repos. If neither is
+github.com/missingno7/pre2_port), `overkill_port` (OK) and `kegg_port` (KE —
+the first DOS/4GW title), typically checked out next to this repo. Paths below are relative to those repos. If neither is
 available on your machine, the entries below still carry the essential shape
 of each technique — enough to re-derive it against your own oracle; treat the
 missing example as lost convenience, not lost method.
 When you re-implement one of these for a new game, read the original first —
 each encodes debugging that took days — and if your version comes out generic,
 promote it (see `roadmap.md`, "parameterize-and-promote").
+
+## Protected mode (DOS/4GW / Watcom LE titles)
+
+**The EXE is MZ but tiny, mentions DOS/4G(W), and `create_runtime` boots
+garbage.** → It's an MZ *stub* + `LE` (Linear Executable) at `e_lfanew` — a
+32-bit flat protected-mode program. The extender is *bootstrap, not
+gameplay*: don't emulate DOS/4GW, replace it. `dos_re.le.load_le` maps the
+image, `dos_re.runtime.create_pm_runtime` boots it on the flat 386 core
+(`cpu386.py`) with the DOS/4GW host (`dos4gw.py`). Day-0 tools:
+`tools/le_info.py` (what am I looking at), `tools/pm_boot.py` (run to the
+fail-loud frontier), `tools/pm_view.py` (zero-setup live window). The whole
+bring-up loop is: run pm_boot, read the named unimplemented opcode/service,
+implement the observed behaviour, re-run. KE went from LE parsing to
+rendered gameplay in one such session; its `docs/kegg/run_status.md` is the
+worked log.
+
+**The Watcom heap corrupts itself minutes in; heap pointers land in
+A0000h.** → LE object bases are *link* bases. Real DOS/4G relocates the
+image above 1 MB (that's what the internal fixups are for) and keeps the
+low megabyte 1:1 (VGA at A0000h). Load at the link base and the C runtime's
+sbrk grows the heap straight into the VGA aperture. `create_pm_runtime`
+rebases +0x100000; analysis tools keep link addresses (`le_info --rebase`
+maps between them). Found the hard way: KE's heap free-list head at a
+planar-VGA address, shredded by plane writes.
+
+**The game's own hardware-detection rejects a device you emulate (mouse,
+SB...).** → It may not call the driver API at all: KE detects the mouse by
+reading the real-mode IVT entry (flat linear 0xCC) through DOS/4GW's 1:1
+low map. `dos_re.dos4gw.seed_low_memory` populates a power-on BIOS
+environment — but seed IVT vectors *narrowly* (BIOS/DOS/mouse/IRQ ranges):
+seeding everything non-null made KE probe VCPI (INT 67h looked installed).
+The Watcom runtime also probes the extender with INT 21h AX=FF00h/AH=EDh
+and INT 2Fh AX=1687h — each answer selects a startup path; KE's
+`docs/kegg/symbol_ledger.md` maps the probe flow.
+
+**The rendered frame shows 4 squeezed copies of the screen side by side.**
+→ The game unchained VGA into Mode X (sequencer memory-mode chain-4 off;
+how 90s action titles hit 70 fps). Linear A0000h bytes are now
+plane-interleaved. `dos_re.dos4gw.VGASequencer` models the planes /
+map-mask / latched write-mode-1 copies, and `render_pm_frame` composes
+pixels from the planes at the CRTC display start. If a frame looks
+right-but-frozen, check `display_start` — the game page-flips.
+
+**You want the lifter on a 32-bit title.** → The whole pipeline has a PM
+counterpart: `lift/decode32|cfg32|emit32|runtime32`,
+`pm_verification.PMHookVerifier` (strict auto-continuation, full-machine
+diff, samples cap), CLI `tools/pmlift.py` (census + emit + in-situ verify).
+Flat Watcom C code lifts far better than 16-bit spaghetti — KE's census:
+98% of the 300 most-called functions mechanically liftable, first 13 lifts
+ORACLE_PASSING with zero divergences. `kegg_port/docs/kegg/
+lifter_gap_analysis.md` is the porting story if dos_re ever needs another
+ISA variant.
 
 ## Timing and speed
 
