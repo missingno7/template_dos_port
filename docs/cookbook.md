@@ -147,6 +147,23 @@ instruction count. Worked examples of the full pipeline (pre-framework, still
 the richest reference): `pre2/native/game_tick_demo.py`,
 `pre2_port/scripts/verify_finish_demo.py`, `scripts/verify_native_tick_demo.py`.
 
+**Proving the native FRONT END equals the VM — the screens with no game tick.**
+→ *Front-end timeline harness* — **a framework engine**: `dos_re/frontend_timeline.py`
+(`capture` + `collapse` + `diff_sequence` + `diff_pixels`; usage skeleton in
+dos_re's `docs/agent_toolbox.md` §12b). The tick demo captures none of the intro
+/ title / menu / attract / map / tally — they run with no tick — so those flows
+ship verified against nothing and drift (a screen shown in the wrong ORDER, a
+dropped fade, a screen before/after the wrong transition). Capture a per-present-frame
+`(logical-screen, RGB-digest)` timeline from the VM and from the native front end,
+then diff by **sequence** (screen order + per-run frame count — catches the wrong-order
+class) and opt-in **pixels** (per-frame RGB, byte-exact — catches cadence bugs a
+single golden-frame test misses, e.g. a native screen that jumps to the settled image
+and drops the VM's multi-frame fade-in). Same oracle trick as the tick demo: capture
+the VM's per-frame sampled input and *inject* it into native (no synthetic keystrokes);
+needs a **cold-start demo** so the native cold-boot entry aligns. Worked adapters:
+`pre2_port/scripts/probe_frontend_timeline.py` (VM ground-truth prober — run on any
+demo), `scripts/frontend_capture.py`, `scripts/verify_native_frontend.py`.
+
 **A divergence appears 10 minutes into a demo.**
 → *Suffix repro*: `InputDemoPlayback.write_suffix` (already in the core)
 carves a snapshot + rebased event tail at the divergence boundary — "resume
