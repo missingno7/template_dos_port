@@ -20,6 +20,10 @@ Usage (the standard surface — identical across every port):
 
 Viewer hotkeys: F10 screenshot, F11 demo-record toggle, F12 snapshot.
 
+DOS/4GW (MZ+LE, 32-bit) titles: do NOT adapt this file — wrap
+``dos_re.pm_player.main`` instead (the PM runner; kegg_port/scripts/play.py
+is the worked example) and keep the same flag surface.
+
 Adapting to your game (every GAME-SPECIFIC block below):
  1. Point ``default_exe``/``default_game_root`` at your assets and set ``name``.
  2. Wire ``create_runtime``/``load_snapshot_runtime`` to YOUR adapter package's
