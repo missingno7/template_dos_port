@@ -67,6 +67,43 @@ ORACLE_PASSING with zero divergences. `kegg_port/docs/kegg/
 lifter_gap_analysis.md` is the porting story if dos_re ever needs another
 ISA variant.
 
+**A recorded demo replays differently from the recording (even crashes),
+though input is re-injected at the exact frame boundaries.** → Some IRQ
+source ticks on *wall clock* while recording but on the instruction count
+(or fire-at-once) while replaying — KE's Sound Blaster block-complete IRQ.
+That ISR lands mid-frame and steers the whole instruction stream: two
+timelines. The 16-bit rule ("instructions ARE time",
+`pre2/docs/live_view_timing_design.md`) applies to PM unchanged: every
+reproducible path (record / replay / headless) must clock every IRQ from
+`instruction_count`; only a casual live view may pace by wall clock
+(`pm_player._configure_sound(deterministic=...)`). PM demos also record a
+per-frame full-VM digest (`pm_input_demo.frame_digest`), so `--play-demo`
+self-verifies: `demo VERIFIED` / `demo DIVERGED at frame N`. Any change to
+an emulated clock invalidates old recordings — re-record, don't debug them.
+
+**The next routine to recover isn't a leaf — it calls helpers you haven't
+recovered yet.** → Don't full-diff it. Split verifiers: pure leaves prove
+under `pm_verification.PMHookVerifier` (strict full-machine diff); composed
+non-leaves prove under `pm_composition.PMCompositionVerifier`, which diffs
+only *observable* state — bytes written outside the routine's transient
+stack frame `[min_esp, entry_esp)` — so nested calls' spill/scratch don't
+count against it. Un-recovered callees are delegated with
+`cpu.call_through(...)` (run the callee through the interpreter from inside
+a hook: push args + sentinel return, run to it, clean up, IRQs suppressed).
+Keep composed hooks in a separate module from strict-leaf hooks so the
+strict verifier never sees them. Worked example: `kegg/composition_hooks.py`
+(0x114085, the ball-vs-brick loop) + `kegg_port/docs/kegg/control_flow.md`.
+
+**"What do I recover next, and how do I prove it?" needs a repeatable
+corpus.** → A recorded gameplay demo *is* the corpus. Two tools close the
+loop from the port root: `dos_re/tools/pm_census.py` replays N frames and
+ranks hot call targets (static profile: ins/calls/INT/port-I/O; HOOKED
+tagged) — the top un-hooked pure LEAF in the game's code region is usually
+the next slice; `dos_re/tools/pm_verify_demo.py` replays the demo under the
+differential verifier (`--focus 0xADDR` while iterating on one routine,
+unfocused as the pre-commit pass). KE's level-2 demo proved `rects_overlap`
+2364/2364 calls in one unfocused pass.
+
 ## Timing and speed
 
 **Headless runs crawl because the game busy-waits (retrace/PIT spins).**
