@@ -1,3 +1,21 @@
+> # RETIRED -- DOS_RE 1.0 (historical)
+>
+> This repository represents the original **DOS_RE 1.0** workflow (manual,
+> per-routine hook recovery with an interpreter fallback) and is now
+> **retired**.  It is preserved as history -- including `MIGRATION.md`, the
+> provenance ledger of the whole ecosystem -- and receives no updates.
+>
+> **New projects must use DOS_RE 2.0** and the current starter workflow in the
+> main [`dos_re`](https://github.com/missingno7/dos_re) repository:
+>
+> - Getting started (the 2.0 starter workflow): `dos_re/docs/getting_started.md`
+> - Canonical architecture: `dos_re/docs/dos_re_2.0.md`
+> - Migrating a project built from THIS template: `dos_re/docs/migration_1.0_to_2.0.md`
+> - Canonical reference implementation (the first full 2.0 pilot, strict
+>   VMless + EXE-independent): the **Lemmings port** (`lemmings_port`)
+>
+> Everything below this notice is the original 1.0 text, kept verbatim.
+
 # template_dos_port — an AI agent ports your DOS game
 
 This repository turns an original DOS game into a **verified, native source

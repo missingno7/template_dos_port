@@ -1,3 +1,8 @@
+> **RETIRED (DOS_RE 1.0).**  This document describes the retired manual-hook
+> workflow.  Do not follow it for new work: see `dos_re/docs/getting_started.md`
+> (workflow), `dos_re/docs/dos_re_2.0.md` (canonical architecture), and the
+> Lemmings port (`lemmings_port`, the 2.0 reference implementation).
+
 # START_HERE — you are the porting agent
 
 You are an AI agent who has been given this repository and a DOS game to port.
